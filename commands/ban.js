@@ -36,8 +36,8 @@ module.exports = {
                     .setImage('');
 
             return message.channel.send(banMessage);
-            }).catch(() => {
-                return message.channel.send(`Missing permissions`);
+            }).catch((err) => {
+                return message.channel.send(err.message);
             });
         
         

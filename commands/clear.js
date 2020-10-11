@@ -1,3 +1,5 @@
+const Discord = require('discord.js');
+
 module.exports = {
     name: 'clear',
     description: 'clean chat',
@@ -15,6 +17,18 @@ module.exports = {
 
         const messageFetch = await message.channel.messages.fetch({ limit: messageNumber});
 
-        return message.channel.bulkDelete(messageFetch);
+        return message.channel.bulkDelete(messageFetch).then(() => {
+            const AlertEmbed = new Discord.MessageEmbed()
+              .setAuthor('Youbi', '')
+              .setDescription('Sucessfully messages delete');
+
+            return message.channel.send(AlertEmbed);
+        }).catch((err) => {
+            const AlertEmbed = new Discord.MessageEmbed()
+            .setAuthor('Youbi', '')
+            .setDescription(err.message);
+
+            return message.channel.send(AlertEmbed);
+        })
     }
 }
