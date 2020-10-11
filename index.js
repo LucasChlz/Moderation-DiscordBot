@@ -1,7 +1,11 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const client = new Discord.Client({ disableMentions: 'none'});
+const mongoose = require('mongoose');
+require('./models/Prefix');
+const PrefixModel = mongoose.model("Prefix")
 const { prefix, token } = require('./config.json');
+var botPrefix;
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -12,13 +16,31 @@ for (const file of commandFiles) {
 }
 
 client.once('ready', () => {
+    const mongoDB = 'mongodb://127.0.0.1/youbidb';
+    mongoose.connect(mongoDB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
+
+    const db = mongoose.connection;
+
+    db.on('error', console.error.bind(console, 'MongoDB connection error'));
+
     console.log('Youbi is ready!');
 });
 
-client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
+client.on('message', async message => {
+    const filter = message.guild.id;
+
+    await PrefixModel.findOne({ name: `${filter}`}).then((prefix) => {
+        return botPrefix = prefix.prefix;
+    }).catch((err) => {
+        return botPrefix = "d!";
+    });
+
+    if (!message.content.startsWith(botPrefix) || message.author.bot) return;
    
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const args = message.content.slice(botPrefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
     if (!client.commands.has(command)) {
@@ -32,5 +54,7 @@ client.on('message', message => {
         }
     }
 });
+
+
 
 client.login(token);

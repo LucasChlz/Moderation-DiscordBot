@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
 
 module.exports = {
     name: 'unban',
@@ -15,7 +14,7 @@ module.exports = {
         if(!memberUnban) {
             const alertEmbed = new Discord.MessageEmbed()
             .setColor(`#4a34a3`)
-            .setDescription(`${prefix}unban <user>`);
+            .setDescription(`<Prefix>unban <user>`);
         
             return message.channel.send(alertEmbed);
         }

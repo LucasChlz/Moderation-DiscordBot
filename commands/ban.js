@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const { prefix } = require('../config.json');
 
 module.exports = {
     name: 'ban',
@@ -15,13 +14,13 @@ module.exports = {
         if(!memberBan) {
             const alertEmbed = new Discord.MessageEmbed()
             .setColor(`#4a34a3`)
-            .setDescription(`${prefix}ban <user> <reason> <days>`);
+            .setDescription(`<Prefix>ban <user> <reason> <days>`);
         
             return message.channel.send(alertEmbed);
         }
 
         const reasonBan = args.slice(1).join(" ");
-
+        
         if(!reasonBan) return message.channel.send(`What is the reason for the ban?`);
 
         const timeBan = args[args.length - 1];
