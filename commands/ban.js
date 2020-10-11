@@ -21,7 +21,7 @@ module.exports = {
         }
 
         const reasonBan = args.slice(1).join(" ");
-        
+
         if(!reasonBan) return message.channel.send(`What is the reason for the ban?`);
 
         const timeBan = args[args.length - 1];
@@ -34,7 +34,7 @@ module.exports = {
                 const banMessage = new Discord.MessageEmbed()
                     .setColor('#d62747')
                     .setTitle(`${memberBan.username} has been banned for ${timeBan} days`)
-                    .setImage('https://media.tenor.com/images/2987e5d56e9c704a4cef8e345cef4c04/tenor.gif');
+                    .setImage('');
 
             return message.channel.send(banMessage);
             }).catch(() => {
