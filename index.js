@@ -2,10 +2,17 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const client = new Discord.Client({ disableMentions: 'none'});
 const mongoose = require('mongoose');
-require('./models/Prefix');
-const PrefixModel = mongoose.model("Prefix")
 const { prefix, token } = require('./config.json');
+
 var botPrefix;
+var setChannelId;
+
+require('./models/Prefix');
+require('./models/Channel');
+
+const PrefixModel = mongoose.model("Prefix")
+const ChannelModel = mongoose.model("Channel");
+
 
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -31,6 +38,7 @@ client.once('ready', () => {
 
 client.on('message', async message => {
     const filter = message.guild.id;
+    const filterChannel = message.channel.id;
 
     await PrefixModel.findOne({ name: `${filter}`}).then((prefix) => {
         return botPrefix = prefix.prefix;
@@ -39,6 +47,15 @@ client.on('message', async message => {
     });
 
     if (!message.content.startsWith(botPrefix) || message.author.bot) return;
+
+    await ChannelModel.findOne({ name: filter}).then((channel) => {
+        return setChannelId = channel.id_channel;
+    }).catch(() => {
+        return setChannelId = filterChannel;
+    });
+
+    if (filterChannel != setChannelId) return message.channel.send("I can't type commands on that channel");
+
    
     const args = message.content.slice(botPrefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
